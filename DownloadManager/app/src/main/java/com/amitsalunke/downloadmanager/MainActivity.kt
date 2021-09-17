@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,11 +26,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun downloadImage(url: String) {
-        val directory = File(Environment.DIRECTORY_PICTURES)
+        //val directory = File(Environment.DIRECTORY_PICTURES)
 
-        if (!directory.exists()) {
-            directory.mkdirs()
-        }
+//        if (!directory.exists()) {
+//            directory.mkdirs()
+//        }
 
         val downloadManager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
@@ -42,14 +43,15 @@ class MainActivity : AppCompatActivity() {
                     .setDescription("")
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                     .setDestinationInExternalPublicDir(
-                            directory.toString(),
+                        Environment.DIRECTORY_DOWNLOADS,
                             url.substring(url.lastIndexOf("/") + 1)
                     )
+
         }
 
-        downloadManager.enqueue(request)
+        //downloadManager.enqueue(request)
 
-        /*val downloadId = downloadManager.enqueue(request)
+        val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
         Thread(Runnable {
             var downloading = true
@@ -58,19 +60,19 @@ class MainActivity : AppCompatActivity() {
                 cursor.moveToFirst()
                 if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                     downloading = false
-                    // imageview.set
                 }
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                msg = statusMessage(url, directory, status)
-                if (msg != lastMsg) {
+                val msg: String? = statusMessage(url, File(Environment.DIRECTORY_DOWNLOADS), status)
+                //if (msg != lastMsg) {
                     this.runOnUiThread {
-                        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                       // Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                        Log.e("DownloadManager", "Status is :$msg")
                     }
-                    lastMsg = msg ?: ""
-                }
+                    //lastMsg = msg ?: ""
+                //}
                 cursor.close()
             }
-        }).start()*/
+        }).start()
     }
 
     private fun statusMessage(url: String, directory: File, status: Int): String? {
