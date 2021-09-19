@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="12dp"
-            android:text="DOWNLOAD IMAGE"
+            android:text="DOWNLOAD PDF"
             android:textColor="@android:color/white" />
 
 
