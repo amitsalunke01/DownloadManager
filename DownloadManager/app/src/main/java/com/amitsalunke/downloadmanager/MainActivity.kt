@@ -42,14 +42,14 @@ class MainActivity : AppCompatActivity() {
 
         val request = DownloadManager.Request(downloadUri).apply {
             setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false)
-                    .setTitle(url.substring(url.lastIndexOf("/") + 1))
-                    .setDescription("")
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setDestinationInExternalPublicDir(
-                            Environment.DIRECTORY_DOWNLOADS,
-                            url.substring(url.lastIndexOf("/") + 1)
-                    )
+                .setAllowedOverRoaming(false)
+                .setTitle(url.substring(url.lastIndexOf("/") + 1))
+                .setDescription("")
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    url.substring(url.lastIndexOf("/") + 1)
+                )
 
         }
         //use when just to download the file with getting status
@@ -57,26 +57,6 @@ class MainActivity : AppCompatActivity() {
 
         val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
-        /*Thread(Runnable {
-            var downloading = true
-            while (downloading) {
-                val cursor: Cursor = downloadManager.query(query)
-                cursor.moveToFirst()
-                if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
-                    downloading = false
-                }
-                val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                val msg: String? = statusMessage(url, File(Environment.DIRECTORY_DOWNLOADS), status)
-                //if (msg != lastMsg) {
-                    this.runOnUiThread {
-                       // Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-                        Log.e("DownloadManager", "Status is :$msg")
-                    }
-                    //lastMsg = msg ?: ""
-                //}
-                cursor.close()
-            }
-        }).start()*/
 
         lifecycleScope.launchWhenStarted {
             var lastMsg: String = ""
@@ -90,14 +70,14 @@ class MainActivity : AppCompatActivity() {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                 val msg: String? = statusMessage(url, File(Environment.DIRECTORY_DOWNLOADS), status)
                 Log.e("DownloadManager", " Status is :$msg")
-                if (msg != lastMsg) {
-                    withContext(Dispatchers.Main) {
-                        // Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-                        text_view.text = msg
-                        //Log.e("DownloadManager", "Status is :$msg")
-                    }
-                    lastMsg = msg ?: ""
+                //if (msg != lastMsg) {
+                withContext(Dispatchers.Main) {
+                    // Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    text_view.text = msg
+                    //Log.e("DownloadManager", "Status is :$msg")
                 }
+                //  lastMsg = msg ?: ""
+                //}
                 cursor.close()
             }
         }
@@ -111,7 +91,7 @@ class MainActivity : AppCompatActivity() {
             DownloadManager.STATUS_PENDING -> "Pending"
             DownloadManager.STATUS_RUNNING -> "Downloading..."
             DownloadManager.STATUS_SUCCESSFUL -> "Image downloaded successfully in $directory" + File.separator + url.substring(
-                    url.lastIndexOf("/") + 1
+                url.lastIndexOf("/") + 1
             )
             else -> "There's nothing to download"
         }
