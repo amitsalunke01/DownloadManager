@@ -87,14 +87,14 @@ class MainActivity : AppCompatActivity() {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                 val msg: String? = statusMessage(url, File(Environment.DIRECTORY_DOWNLOADS), status)
                 Log.e("DownloadManager", " Status is :$msg")
-                //if (msg != lastMsg) {
-                withContext(Dispatchers.Main) {
-                    // Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-                    text_view.text = msg
-                    //Log.e("DownloadManager", "Status is :$msg")
+                if (msg != lastMsg) {
+                    withContext(Dispatchers.Main) {
+                        // Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                        text_view.text = msg
+                        //Log.e("DownloadManager", "Status is :$msg")
+                    }
+                    lastMsg = msg ?: ""
                 }
-                //  lastMsg = msg ?: ""
-                //}
                 cursor.close()
             }
         }
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             DownloadManager.STATUS_PAUSED -> "Paused"
             DownloadManager.STATUS_PENDING -> "Pending"
             DownloadManager.STATUS_RUNNING -> "Downloading..."
-            DownloadManager.STATUS_SUCCESSFUL -> "Image downloaded successfully in $directory" + File.separator + url.substring(
+            DownloadManager.STATUS_SUCCESSFUL -> "PDF downloaded successfully in $directory" + File.separator + url.substring(
                 url.lastIndexOf("/") + 1
             )
             else -> "There's nothing to download"
